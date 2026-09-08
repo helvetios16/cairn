@@ -5,7 +5,7 @@ argument-hint: "Optional implementation guidance or task filter (same format as 
 compatibility: "Requires a Spec Kit project structure (.specify/) with tasks.md generated, and the agent-selection skill in this same repo"
 metadata:
   status: experimental
-  version: "0.4"
+  version: "0.5"
 user-invocable: true
 disable-model-invocation: false
 ---
@@ -133,3 +133,7 @@ Same as `speckit-implement`'s "Done When", plus the per-phase detail:
   way afterward, because the `tasks.md` format (`[X]` checkboxes) doesn't change.
 - It doesn't cover the "proposal" or "review/verify + archive" phases that Spec Kit is missing (see
   the decision memory on the SDD roadmap) — out of scope for now, archived.
+- Optional next step once closing is done: `sdd-document`, to update `ARCHITECTURE.md` with what
+  this run actually touched — natural to invoke right here, while the per-phase file data from
+  Step 2/3 is still fresh in the session, instead of re-deriving it standalone later. Not a
+  precondition, never invoked automatically.

@@ -39,3 +39,7 @@
   for the third consecutive time (T008/T009, T015/T016) — no new phase-execution friction in this
   round. The polling fix (`herdr wait agent-status`/`herdr wait output`) also confirmed clean in this
   round belongs to `agent-selection` v0.33, not this skill — see its `CHANGELOG.md` v0.34.
+- **v0.5** — adds a one-line pointer in Notes to the new `sdd-document` skill as an optional next
+  step after closing: updates `ARCHITECTURE.md` grounded in this run's per-phase touched files,
+  best invoked right here while that data is still fresh in the session instead of re-derived
+  standalone later. Not a precondition, no behavior change to this skill's own steps.
