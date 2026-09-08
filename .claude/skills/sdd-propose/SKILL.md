@@ -5,7 +5,7 @@ argument-hint: "Describe the feature you want to frame"
 compatibility: "Requires a Spec Kit project structure with .specify/ and the script .specify/scripts/bash/create-new-feature.sh"
 metadata:
   status: experimental
-  version: "0.1"
+  version: "0.2"
 user-invocable: true
 disable-model-invocation: false
 ---
@@ -46,7 +46,35 @@ empty, report `No feature description provided` and do not create any directory 
    `NEEDS CLARIFICATION` marker is the only exception allowed when the ambiguity is material; once
    the answer is received, replace it with a concrete decision.
 
-## Step 2 — create the feature directory with the existing mechanism
+## Step 2 — ground the proposal in the real repo (conditional)
+
+Applies the "leer y entender" vs. "generar" split from context engineering: exploring the real
+repo state and drafting the proposal are two separate steps, so `archivos_afectados` and `riesgos`
+get grounded in verified facts instead of guessed patterns.
+
+1. **Decide whether grounding applies.** Check if the description in `$ARGUMENTS` references
+   functionality, modules, or components that already exist in this repo (a brownfield touch), as
+   opposed to a wholly new, isolated capability with nothing existing to build on (greenfield). A
+   quick look at the repo's top-level structure is enough to decide — no need for a deep read yet.
+   - **Greenfield** (nothing existing to explore): skip the rest of this step and record in the
+     Completion Report `Grounding: omitido (greenfield, sin código existente relacionado)`. Do not
+     force an exploration pass when there's nothing to ground — Constitution Principle II.
+   - **Brownfield** (touches or extends existing code): continue to point 2.
+2. **Delegate the exploration, don't do it inline.** Launch a dedicated read-only agent (the
+   `Explore` agent type — fast, read-only, built for "where is X / which files reference Y") scoped
+   to the area described in `$ARGUMENTS`: current architecture, stack, and the specific files or
+   patterns that already implement the related behavior. This session drafts `proposal.md`
+   afterward with those findings as evidence — it does not explore and generate in the same pass,
+   so the draft isn't contaminated by unverified assumptions about the repo's current state.
+3. **Treat findings as structure, not behavior.** A static read confirms what exists (files,
+   modules, call sites) — it does not confirm that code path works end-to-end. Don't let the
+   exploration findings claim a feature "already works" or is "X% complete"; that requires running
+   something, which is out of scope here. Use them only to ground `archivos_afectados` in real
+   paths and `riesgos` in the real surface already in place, in Step 4.
+4. Record in the Completion Report which case applied (`omitido` or grounded) so the next skill in
+   the chain knows whether `archivos_afectados` reflects verified paths or best-effort guesses.
+
+## Step 3 — create the feature directory with the existing mechanism
 
 1. With the description available, derive a short name of 2 to 4 words, in action or
    concept form, to pass to `create-new-feature.sh` only if it's necessary to set the name. Do not
@@ -62,7 +90,7 @@ empty, report `No feature description provided` and do not create any directory 
    follows. Do not create a second folder, even if the branch name and the directory name
    differ.
 
-## Step 3 — draft `proposal.md`
+## Step 4 — draft `proposal.md`
 
 Write `SPECIFY_FEATURE_DIRECTORY/proposal.md` with these six exact sections, in this order.
 The headings must keep these data-model field names:
@@ -72,20 +100,23 @@ The headings must keep these data-model field names:
 3. `## alcance_excluye` — a concrete list of what's out, including boundaries that prevent
    generalizing beyond the real case.
 4. `## archivos_afectados` — paths or file patterns that will likely be created, read, or
-   modified. If an exact path can't yet be determined, describe the pattern and the reason,
-   without turning it into a generic list of possible files.
+   modified. If Step 2 ran a grounded exploration, use its findings here — real paths, not
+   guesses. If an exact path can't yet be determined (including when Step 2 was skipped as
+   greenfield), describe the pattern and the reason, without turning it into a generic list of
+   possible files.
 5. `## riesgos` — feature-specific risks, known mitigations, and the review status of the
-   `agent-selection` risk list.
+   `agent-selection` risk list. If Step 2 grounded the proposal, base this on the real existing
+   surface it found, not on an assumed one.
 6. `## rollback` — concrete steps to revert the feature and restore the prior state; if the
    reversal requires a decision or an irreversible action, flag it.
 
-Write content derived from `$ARGUMENTS`, repo context, and reasonable assumptions. Document
-assumptions within the relevant section or at the end of `## problema` as `Supuestos`; do not
-add a seventh section to the model or leave unresolved template text. The proposal should
-be readable for whoever will decide the scope and must not become a detailed
-implementation plan.
+Write content derived from `$ARGUMENTS`, repo context, the Step 2 grounding findings (when it
+ran), and reasonable assumptions. Document assumptions within the relevant section or at the end
+of `## problema` as `Supuestos`; do not add a seventh section to the model or leave unresolved
+template text. The proposal should be readable for whoever will decide the scope and must not
+become a detailed implementation plan.
 
-## Step 4 — explicitly review risk before closing
+## Step 5 — explicitly review risk before closing
 
 In `## riesgos`, review the identified files and boundaries against the risk list from Step 2
 of `.claude/skills/agent-selection/SKILL.md`: `.env*` and other environment files, SSH or
@@ -104,13 +135,15 @@ any further specification or implementation step until the user explicitly confi
 how to proceed. Detection does not authorize migrations, deploys, exposure of secrets,
 auth/payments changes, or deletions.
 
-## Step 5 — Completion Report
+## Step 6 — Completion Report
 
 Finish with a report to the user that includes:
 
 - `SPECIFY_FEATURE_DIRECTORY`: the exact resolved path value, for example
   `specs/003-user-auth`.
 - `SPEC_FILE`: the exact path returned by `create-new-feature.sh`.
+- `Grounding`: whether Step 2 ran (brownfield, with a short summary of what it found) or was
+  omitted (greenfield).
 - `proposal.md`: confirmation that it was written inside `SPECIFY_FEATURE_DIRECTORY` and that it
   contains the six required sections.
 - `Riesgo`: explicit result of the `agent-selection` review; if applicable, the pending human
@@ -125,6 +158,8 @@ explicit `SPECIFY_FEATURE_DIRECTORY` value for the next command.
 ## Done When
 
 - [ ] Empty input was rejected without creating any files.
+- [ ] Grounding (Step 2) was explicitly resolved as either run (brownfield, with findings) or
+      skipped (greenfield, with the reason) — never silently omitted.
 - [ ] `create-new-feature.sh` was run to resolve the numbered directory and its numbering was
       not reimplemented.
 - [ ] `proposal.md` exists in the folder returned by the script.
