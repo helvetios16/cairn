@@ -1,5 +1,18 @@
 # Changelog — sdd-judge
 
+- **v0.2** — adds a **design mode**, picked automatically (never asked of the user) when
+  `spec.md` exists but no task is implemented yet, alongside the original **implementation mode**
+  (unchanged, still the default once any task is marked `[X]`). Design mode freezes
+  `spec.md`/`plan.md`/`tasks.md`/`data-model.md`/`contracts` instead of a code diff, and judges
+  against design-specific criteria (missing/ambiguous edge cases, contradictions between design
+  artifacts, untestable requirements, scope drift from `proposal.md`) instead of code-defect
+  criteria — matching how Gentle's own `judgment-day` runs before codification rather than after.
+  Reports are now mode-named (`judgment-report-design.md` / `judgment-report-implementation.md`)
+  so neither run overwrites the other. Motivated by comparing this repo's SDD flow against Gentle
+  (Gentleman Programming's OpenCode orchestrator — Phyume note "Gentle (OpenCode Orchestrator)"),
+  which catches design-level gaps before coding starts; v0.1 only covered the post-implementation
+  half of that pattern. Re-reviewing a design after implementation has started is explicitly out of
+  scope for now (Constitution Principle II — no concrete need seen yet).
 - **v0.1** — first version. New skill that adapts gentle-ai's `judgment-day` to this repo's own
   multi-agent framework: adversarial review with two judges blind to each other, launched via
   Herdr (reuses the Blind dual-judge operationalization and the CLI/model table already defined in
