@@ -142,3 +142,23 @@ if the detail is ever needed).
   verification). Result: 438 → 140 lines (~68% less). The full detail of the compressed versions remains
   recoverable line by line in this file's git history — no information was lost, only the prose was
   summarized. The preamble criterion was also updated to describe the new block scheme.
+- **v0.48** — live finding, user-initiated: confirmed that `agent start` types the launch command into
+  the pane's real interactive shell, so it lands in `~/.zsh_history` once that pane's shell exits (not
+  immediately — the shell hasn't returned to its prompt while the agent runs in the foreground, so an
+  early check can look clean when it isn't). Tested live: without a workaround, `codex -m gpt-5.6-luna
+  ...` surfaced in history only after `tab close`; with `herdr pane run <pane_id> "unset HISTFILE"` run
+  first, the same launch command and a follow-up prompt did not surface after the pane's shell exited.
+  Added as a mandatory step before `agent start` in the launch sequence (Step 4). Scoped explicitly to
+  the shell history file only — doesn't hide the command from the pane's visible content, `ps`, or
+  `[experimental] pane_history` if that flag is ever enabled.
+- **v0.49** — explicit user request: whenever Agy is launched, always pass `--dangerously-skip-permissions`
+  (`--kind agy -- --dangerously-skip-permissions`), the Agy equivalent of Claude Code's bypass-permissions
+  mode or opencode's build mode. Added as a note next to the existing "Agy removed from active roster
+  (v0.40)" entry rather than restoring Agy to the fixed-models table — the v0.40 removal was about
+  `agent_status` reliability, a separate concern this flag doesn't resolve on its own, and no live retest
+  was done in this session. Flagged as worth retesting: part of the v0.40 unreliability came from Agy
+  idling at unresolved trust/confirmation prompts, which this flag may sidestep entirely — left as an
+  open question, not a re-verified fact. User first asked for this as a `~/.zshrc` alias
+  (`alias agy='command agy --dangerously-skip-permissions'`); redirected to this skill instead once
+  clarified that the intent was Herdr-mediated launches, not the user's own interactive shell — the
+  `.zshrc` edit was reverted.

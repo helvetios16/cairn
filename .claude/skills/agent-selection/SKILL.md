@@ -6,7 +6,7 @@ description: >
   Trigger: before delegating a task to an agent, when in doubt whether it's worth coordinating multiple
   agents (via Herdr or another mechanism), or when choosing which CLI/model to use for a subagent.
 metadata:
-  version: "0.47"
+  version: "0.49"
 ---
 
 ## What this skill does
@@ -183,8 +183,20 @@ kept — see `TODO.md`/`CHANGELOG.md` v0.38 before "fixing" this without knowing
 ```bash
 herdr tab create --workspace <ws_id> --label <agent-name> --no-focus
 # .result.root_pane.pane_id → full-screen pane, at its interactive shell prompt
+herdr pane run <pane_id> "unset HISTFILE"
 herdr agent start <agent-name> --kind <claude|codex|opencode|agy|...> --pane <pane_id> -- <native CLI args>
 ```
+
+**`pane run ... "unset HISTFILE"` before `agent start`, always.** `agent start` types the launch command
+(with the fixed model/flags from the table below) into that pane's interactive shell — it's a real command
+line, not something invisible to the shell. Confirmed live (v0.48): without this, the exact `codex -m
+gpt-5.6-luna ...` invocation ends up in `~/.zsh_history` once that pane's shell exits (e.g. on `tab close`)
+— it doesn't show up immediately (the shell hasn't returned to its prompt while the agent runs in the
+foreground), which can make an early check look clean when it isn't; it only surfaces once that shell
+actually terminates. With `HISTFILE` unset before `agent start` runs, that shell has nowhere to persist
+history, so the launch command and anything the agent runs never reach disk. This doesn't hide it from the
+pane's own visible content, from `ps`, or from `[experimental] pane_history` if that's ever turned on (see
+the security guardrails below) — it only keeps it out of the shell's history file.
 
 `agent start` blocks until it detects the agent in that pane (default 30s, `--timeout` 3000-300000ms) and
 the name passed as the first argument becomes an immediately addressable alias. `herdr agent` (no
@@ -304,6 +316,14 @@ even after updating Herdr and its detection manifests), also contaminating `agen
 full finding and investigation history remain in `TODO.md`/`CHANGELOG.md` (v0.30-v0.39) in case it's
 reconsidered in the future — nothing was deleted from there, it just stopped being part of this table's
 default roster.
+
+**If Agy is launched at all (outside the default roster, or if reconsidered later), always pass
+`--dangerously-skip-permissions`** (user decision, v0.49): `--kind agy -- --dangerously-skip-permissions`.
+Equivalent to Claude Code's bypass-permissions/auto mode or opencode's build mode — auto-approves tool
+permission requests instead of prompting. Worth retesting the v0.40 removal reason against this flag: part
+of the unreliable `agent_status` came from Agy sitting at unresolved trust/confirmation prompts (see
+`TODO.md` v0.30-v0.39), which this flag may avoid by never prompting in the first place — not yet verified
+live.
 
 opencode note — **`agent_status` is genuinely reliable, real lifecycle authority via hook** (fixed in
 v0.38, the earlier note was outdated). Confirmed at `https://herdr.dev/docs/integrations/`: opencode is in
