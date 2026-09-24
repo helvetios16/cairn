@@ -18,7 +18,7 @@ Sync Impact Report
 - Follow-up TODOs: none
 -->
 
-# herd Constitution
+# Cairn Constitution
 
 Repo de skills de Claude Code. Colección de skills independientes (`agent-selection`, y las que se
 agreguen — incluyendo la de SDD/Spec Kit en construcción), cada una versionada y documentada por

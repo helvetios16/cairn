@@ -24,7 +24,7 @@ string de versión no vacío.
 
 **Acceptance Scenarios**:
 
-1. **Given** el repo `herd`, **When** se lee `VERSION` en la raíz, **Then** el archivo existe y
+1. **Given** el repo `cairn`, **When** se lee `VERSION` en la raíz, **Then** el archivo existe y
    contiene una única línea con un string de versión no vacío.
 
 ### Edge Cases

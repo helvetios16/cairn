@@ -2,7 +2,7 @@
 
 ## Prerrequisitos
 
-- Estar en la raíz del repo `herd`.
+- Estar en la raíz del repo `cairn`.
 - `scripts/check-skills.sh` implementado (Fase 2/3, ver `tasks.md`).
 
 ## Escenario 1 — estado actual del repo (Historia 1 + 2)

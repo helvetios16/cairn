@@ -1,4 +1,4 @@
-# herd
+# Cairn
 
 Claude Code skills repo. General repo principles in
 [`.specify/memory/constitution.md`](.specify/memory/constitution.md) (Spec-Driven Development via

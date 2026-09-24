@@ -48,7 +48,7 @@ here. One of the two was verified live, more thoroughly than earpi's original re
       `~/.local/share/agent-selection/restricted-bin/engram` (outside every repo tree), and the inline
       `PATH` in Step 4 of `SKILL.md` was updated accordingly.
 - [x] **Bypass test repeated with the wrapper at the new path** — Codex genuinely launched through
-      Herdr with `-s workspace-write` in `herd`, explicitly asked to write a file inside the repo, read
+      Herdr with `-s workspace-write` in `cairn`, explicitly asked to write a file inside the repo, read
       the external wrapper, and delete it. Result: writing inside the repo — success (exit 0); reading
       the external wrapper — success (exit 0, the sandbox does not restrict reading outside the project,
       only writing); **deleting the wrapper — failed**: `rm: .../restricted-bin/engram: Operation not
@@ -89,7 +89,7 @@ here. One of the two was verified live, more thoroughly than earpi's original re
 ## Medium
 
 - [x] **`/tmp` remains writable under `-s workspace-write`** — reconfirmed with real Codex through
-      Herdr (v0.147.0): `echo ... > /tmp/herd-sandbox-tmp-test.txt` wrote, read, and deleted without
+      Herdr (v0.147.0): `echo ... > /tmp/cairn-sandbox-tmp-test.txt` wrote, read, and deleted without
       error, code 0. It does not affect Engram (its DB does not live there), but remains an open path if
       at some point it becomes necessary to block *any* writing outside the project, not just that of a
       specific binary.
@@ -143,7 +143,7 @@ findings about Step 4 launch mechanics, not security.
       to create 3 files and run a shell command (`date`), without `--sandbox`. Result: **4 of 4 actions
       requested individual confirmation** (3 files + 1 command), none grouped — plus a single **trust
       prompt** ("Do you trust the contents of this project?") because it was the first time in that
-      directory; it had not appeared in the `herd` trial because Agy already trusted it from previous
+      directory; it had not appeared in the `cairn` trial because Agy already trusted it from previous
       sessions. This contradicted the previous Step 4 note, which attributed confirmation friction only
       to `--sandbox` — corrected: the Agy note in Step 4 now explicitly says that an Agy role with write
       capability is not fire-and-forget; it must be polled (`agent read --source visible`) and each
@@ -259,7 +259,7 @@ real test tabs/panes, not speculation); other candidates (`herdr worktree`, `her
       tool (shows the exact rule that triggered a status, or the fallback reason if none triggered) —
       documented as a quick reference in Step 4, beside the `revision` note.
 - [x] **`herdr worktree create/open/remove` confirmed as a real answer to the parallel-write gap.**
-      Tested live on the `herd` repo: `herdr worktree create --workspace wH --branch
+      Tested live on the `cairn` repo: `herdr worktree create --workspace wH --branch
       test/herdr-worktree-check --label wt-test --no-focus` created a real git worktree (visible with
       `git worktree list` from the main repo) in a new Herdr workspace with its own tab/pane, on its own
       branch. Isolation confirmed in both directions: a file written inside the worktree

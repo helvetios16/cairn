@@ -3,7 +3,7 @@
 ## problema
 
 No hay un único lugar legible por script (sin depender de `git tag`) que indique la versión
-actual del repo `herd`. Esta feature es, además, un caso de prueba deliberadamente chico y
+actual del repo `cairn`. Esta feature es, además, un caso de prueba deliberadamente chico y
 descartable para correr el ciclo completo `sdd-propose` → `/speckit-specify` → implementación →
 `sdd-verify` → `sdd-archive` de punta a punta.
 
@@ -13,7 +13,7 @@ real detrás de esta feature; es infraestructura de prueba interna.
 
 ## alcance_incluye
 
-- Un archivo `VERSION` en la raíz del repo (`/Users/sebastian/Documents/Variety/herd/VERSION`) con
+- Un archivo `VERSION` en la raíz del repo (`/Users/sebastian/Documents/Variety/cairn/VERSION`) con
   una única línea de texto (el string de versión).
 
 ## alcance_excluye
